@@ -1,3 +1,6 @@
 build/
 CMakeLists.txt.user
 
+# Raylib
+include/raylib
+lib/libraylib.a
