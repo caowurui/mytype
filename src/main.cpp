@@ -1,14 +1,19 @@
 #include <raylib/raylib.h>
 #include <vector>
 
-const int WinWidth = 400;               //窗口宽度
+const int WinWidth = 480;               //窗口宽度
 const int WinHeight = 600;              //窗口高度
 const int RedLine = 400;                //红线所在位置（纵坐标）
 const int RedLineWidth = 4;             //红线高度
 
 const int letter_rate = 100;            //字母生成速率
-const int letter_size = 20;             //字母大小
 const int letter_v = 2;                 //字母下落速率
+
+const int font_size = 30;               //字母大小
+const float spacing = 0.0f;             //字母间距
+const char font_name[] =
+        "C:/Windows/Fonts/consola.ttf"; //字体文件路径
+Font font;                              //字体资源文件
 
 bool GameOver = true;                   //游戏是否中止
 
@@ -18,27 +23,40 @@ struct aLetter{
 };
 std::vector<aLetter> letters[26];       //存储各种字母
 
+void GetFont();                         //获得并初始化字体
 void Process();                         //主体游戏逻辑
 void GenerateLetter();                  //随机生成新的字母
 void Draw();                            //绘制字母
 void ToBeContinued();                   //游戏中止
 
-int main()
-{
-    SetTargetFPS(60);
-    InitWindow(WinWidth,WinHeight,"My Type");
+int main(){
 
-    while(!WindowShouldClose()){
+    SetTargetFPS(60);                           //设置FPS
+    InitWindow(WinWidth,WinHeight,"My Type");   //初始化窗口
+
+    GetFont();                                  //获取字体
+
+    while(!WindowShouldClose()){                //游戏循环
         if(!GameOver){
-            Process();
-            Draw();
+            Process();                          //游戏主逻辑
+            Draw();                             //绘图
         }
         else
-            ToBeContinued();
+            ToBeContinued();                    //游戏中止
     }
 
     CloseWindow();
     return 0;
+}
+
+void GetFont(){
+    int filesize;
+    unsigned char* fileData=LoadFileData(font_name,&filesize);
+    int cnt;
+    int* codepoints=LoadCodepoints("abcdefghijklmnopqrstuvwxyzENPRT.[]",&cnt);
+    font=LoadFontFromMemory(".ttf",fileData,filesize,font_size,codepoints,cnt);
+    UnloadCodepoints(codepoints);
+    UnloadFileData(fileData);
 }
 
 void Process(){
@@ -58,16 +76,17 @@ void Process(){
     for(int i=0;i<26;i++)
         for(std::vector<aLetter>::iterator it = letters[i].begin();it!=letters[i].end();it++)
             it->y += letter_v;
+
 //判断是否到达红线
     for(int i=0;i<26;i++)
         for(std::vector<aLetter>::iterator it = letters[i].begin();it!=letters[i].end();it++)
-            if(it->y+letter_size>=RedLine)
+            if(it->y+font_size>=RedLine)
                 GameOver=true;
 }
 
 void GenerateLetter(){
     int ranchar=GetRandomValue(0,25);
-    int ranx=GetRandomValue(letter_size,WinWidth-2*letter_size);
+    int ranx=GetRandomValue(font_size,WinWidth-2*font_size);
     aLetter t{ranx};
     letters[ranchar].push_back(t);
 }
@@ -81,9 +100,7 @@ void Draw(){
 
         for(int i=0;i<26;i++)
             for(aLetter it:letters[i]){
-                char tmp[2]={'\0','\0'};
-                tmp[0]=i+'a';
-                DrawText(tmp,it.x,it.y,letter_size,BLACK);
+                DrawTextEx(font,TextFormat("%c",i+'a'),Vector2{(float)it.x,(float)it.y},font_size,spacing,BLACK);
             }
 
     EndDrawing();
@@ -101,7 +118,7 @@ void ToBeContinued(){
         ClearBackground(RAYWHITE);
         DrawRectangle(0,RedLine,WinWidth,RedLineWidth,RED);
 
-        DrawText("Press [ENTER] to continue.",0,WinHeight/2,letter_size,BLACK);
+        DrawTextEx(font,"Press [ENTER] to continue.",Vector2{0,WinHeight/2},font_size,spacing,BLACK);
 
     EndDrawing();
 }
