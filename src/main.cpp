@@ -9,23 +9,29 @@ const int RedLine = 400;                //红线所在位置（纵坐标）
 const int RedLineWidth = 4;             //红线高度
 const Color BackgroundColor = LIGHTGRAY;//背景颜色
 
-const int letter_rate = 50;             //字母生成速率
+const int letter_rate = 120;            //字母生成标准周期
+float r_times=1.0f;                     //字母生成频率倍率
 float letter_v = 1;                     //字母下落速率
-const float times=2.0f;                      //字母下落速率倍率
+const float times=2.0f;                 //字母下落速率倍率
 
 const int font_size = 30;               //字母大小
 const float spacing = 0.0f;             //字母间距
 const char font_name[] =
         "C:/Windows/Fonts/simhei.ttf";  //字体文件路径
 const char characters[]=
-        "abcdefghijklmnopqrstuvwxyzENPRT0123456789.:[]最高分数速率暂停继续";
+        "abcdefghijklmnopqrstuvwxyz0123456789.:[]最高分数频速率请按任意键继续暂停生成";
                                         //字符集
 Font font;                              //字体资源文件
 
 const Rectangle button_rec={WinWidth-3*font_size,WinHeight-font_size*1.5f,font_size*3,font_size*1.5f};
+
 const Rectangle label_speed_character_rec={0,RedLine+RedLineWidth,3*font_size,font_size};
-const Rectangle slider_rec={3.5f*font_size,RedLine+RedLineWidth,WinWidth-4.5*font_size,font_size};
-const Rectangle label_speed_num_rec={(WinWidth+1.5f*font_size)/2.0f,RedLine+RedLineWidth,font_size,font_size};
+const Rectangle slider_speed_rec={3.5f*font_size,RedLine+RedLineWidth,WinWidth-4.5*font_size,font_size};
+const Rectangle label_speed_num_rec={(WinWidth+1.0f*font_size)/2.0f,RedLine+RedLineWidth,2*font_size,font_size};
+
+const Rectangle label_gen_character_rec={0,RedLine+RedLineWidth+font_size,6*font_size,font_size};
+const Rectangle slider_gen_rec={5.5f*font_size,RedLine+RedLineWidth+font_size,WinWidth-7.0*font_size,font_size};
+const Rectangle label_gen_num_rec={(WinWidth+1.5f*font_size)/2.0f,RedLine+RedLineWidth+font_size,2*font_size,font_size};
 
 bool GameOver = true;                   //游戏是否中止
 bool IsPaused = false;                  //游戏是否暂停
@@ -79,8 +85,13 @@ void GetFont(){
 void Process(){
 //速度条
     GuiLabel(label_speed_character_rec,"速率:");
-    GuiSlider(slider_rec,"0","9",&letter_v,0,9);
-    GuiLabel(label_speed_num_rec,TextFormat("%d",(int)letter_v));
+    GuiSlider(slider_speed_rec,"0","9",&letter_v,0,9);
+    GuiLabel(label_speed_num_rec,TextFormat("%.1f",letter_v));
+
+//生成速率条
+    GuiLabel(label_gen_character_rec,"生成频率:");
+    GuiSlider(slider_gen_rec,"1","20",&r_times,1.0f,20.0f);
+    GuiLabel(label_gen_num_rec,TextFormat("%d",(int)r_times));
 
 //暂停机制
     if(!IsPaused&&GuiButton(button_rec,"暂停"))
@@ -92,14 +103,14 @@ void Process(){
 //定时生成字母
     static int time=0;
     time++;
-    if(time%letter_rate==0)
+    if(time%(letter_rate/((int)r_times))==0)
         GenerateLetter();
 
 //按到对应字母后消除
     for(int i=65;i<=90;i++)
         if(IsKeyPressed(i))
             if(!letters[i-65].empty()){
-                point=point+letter_v;
+                point=point+letter_v*r_times;
                 if(point>=max_point)max_point=point;
                 letters[i-65].clear();
             }
@@ -158,8 +169,8 @@ void ToBeContinued(){
         ClearBackground(BackgroundColor);
         DrawRectangle(0,RedLine,WinWidth,RedLineWidth,RED);
 
-        Vector2 tmp=MeasureTextEx(font,"Press [ENTER] to continue.",font_size,spacing);
-        DrawTextEx(font,"Press [ENTER] to continue.",Vector2{(WinWidth-tmp.x)/2.0f,RedLine-font_size},font_size,spacing,DARKBROWN);
+        Vector2 tmp=MeasureTextEx(font,"请按任意键继续",font_size,spacing);
+        DrawTextEx(font,"请按任意键继续",Vector2{(WinWidth-tmp.x)/2.0f,RedLine-font_size},font_size,spacing,DARKBROWN);
 
     EndDrawing();
 }
