@@ -1,45 +1,12 @@
 {
 	"struct":{
-		"Vector2":{
-			"float":["x","y"]
-		},
-		"Vector3":{
-			"float":["x","y","z"]
-		},
-		"Color":{
-			"unsigned char":["r","g","b","a"]
-		},
-		"Rectangle":{
-			"float":["x","y","width","height"]
-		},
-		"Texture2D":{
-			"unsigned int":["id"],
-			"int":["width","height","mipmaps","format"]
-		},
-		"Image":{
-			"void *":["data"],
-			"int":["width","height","mipmaps","format"]
-		},
-		"GlyphInfo":{
-			"int":["value","offsetX","offsetY","advanceX"],
-			"Image":["image"]
-		},
-		"Font":{
-			"int":["baseSize","glyphCount","glyphPadding"],
-			"Texture2D":["texture"],
-			"Rectangle *":["recs"],
-			"GlyphInfo *":["glyphs"]
-		},
-		"GuiStyleProp":{
-			"unsigned short":["controlId","propertyID"],
-			"int":["propertyValue"]
-		}
+		"Vector2":{"float":["x","y"]},
+		"Vector3":{"float":["x","y","z"]},
+		"Color":{"unsigned char":["r","g","b","a"]},
+		"Rectangle":{"float":["x","y","width","height"]},
+		"GuiStyleProp":{"unsigned short":["controlId","propertyID"],"int":["propertyValue"]}
 	},
 	"enum":{
-		"GuiState":["STATE_NORMAL","STATE_FOCUSED","STATE_PRESSED","STATE_DISABLED"],
-		"GuiTextAlignment":["TEXT_ALIGN_LEFT","TEXT_ALIGN_CENTER","TEXT_ALIGN_RIGHT"],
-		"GuiTextAlignmentVertical":["TEXT_ALIGN_TOP","TEXT_ALIGN_MIDDLE","TEXT_ALIGN_BOTTOM"],
-		"GuiTextWrapMode":["TEXT_WRAP_NONE","TEXT_WRAP_CHAR","TEXT_WRAP_WORD"],
 		"GuiControl":[
 			"DEFAULT ",
 			"LABEL",
@@ -75,43 +42,21 @@
     		"TEXT_PADDING",
     		"TEXT_ALIGNMENT"
 		],
-		"GuiDefaultProperty":[
-			"TEXT_SIZE = 16",
-    		"TEXT_SPACING",
-    		"LINE_COLOR",
-    		"BACKGROUND_COLOR",
-   			"TEXT_LINE_SPACING",
-    		"TEXT_ALIGNMENT_VERTICAL",
-    		"TEXT_WRAP_MODE"    
-		],
+		"GuiTextAlignment":["TEXT_ALIGN_LEFT","TEXT_ALIGN_CENTER","TEXT_ALIGN_RIGHT"],
+		"GuiTextAlignmentVertical":["TEXT_ALIGN_TOP","TEXT_ALIGN_MIDDLE","TEXT_ALIGN_BOTTOM"],
+		"GuiTextWrapMode":["TEXT_WRAP_NONE","TEXT_WRAP_CHAR","TEXT_WRAP_WORD"],
+		"GuiDefaultProperty":["TEXT_SIZE = 16","TEXT_SPACING","LINE_COLOR","BACKGROUND_COLOR","TEXT_LINE_SPACING","TEXT_ALIGNMENT_VERTICAL","TEXT_WRAP_MODE"],
 		"GuiToggleProperty":["GROUP_PADDING = 16"],
 		"GuiSliderProperty":["SLIDER_WIDTH = 16","SLIDER_PADDING"],
 		"GuiProgressBarProperty":["PROGRESS_PADDING = 16"],
-		"GuiScrollBarProperty":[
-			"ARROWS_SIZE = 16",
-			"ARROWS_VISIBLE",
-    		"SCROLL_SLIDER_PADDING",
-    		"SCROLL_SLIDER_SIZE",
-    		"SCROLL_PADDING",
-    		"SCROLL_SPEED",
-		],
+		"GuiScrollBarProperty":["ARROWS_SIZE = 16","ARROWS_VISIBLE","SCROLL_SLIDER_PADDING","SCROLL_SLIDER_SIZE","SCROLL_PADDING","SCROLL_SPEED"],
 		"GuiCheckBoxProperty":["CHECK_PADDING = 16"],
 		"GuiComboBoxProperty":["COMBO_BUTTON_WIDTH = 16","COMBO_BUTTON_SPACING"],
 		"GuiDropdownBoxProperty":["ARROW_PADDING = 16","DROPDOWN_ITEMS_SPACING"],
 		"GuiTextBoxProperty":["TEXT_READONLY = 16"],
 		"GuiSpinnerProperty":["SPIN_BUTTON_WIDTH = 16","SPIN_BUTTON_SPACING"],
-		"GuiListViewProperty":[
-			"LIST_ITEMS_HEIGHT = 16",
-			"LIST_ITEMS_SPACING",
-			"SCROLLBAR_WIDTH",
-			"SCROLLBAR_SIDE",
-		],
-		"GuiColorPickerProperty":[
-			"COLOR_SELECTOR_SIZE = 16",
-			"HUEBAR_WIDTH",
-			"HUEBAR_PADDING",
-			"HUEBAR_SELECTOR_HEIGHT",
-    		"HUEBAR_SELECTOR_OVERFLOW"],
+		"GuiListViewProperty":["LIST_ITEMS_HEIGHT = 16","LIST_ITEMS_SPACING","SCROLLBAR_WIDTH","SCROLLBAR_SIDE",],
+		"GuiColorPickerProperty":["COLOR_SELECTOR_SIZE = 16","HUEBAR_WIDTH","HUEBAR_PADDING","HUEBAR_SELECTOR_HEIGHT","HUEBAR_SELECTOR_OVERFLOW"],
 		"GuiIconName":{
     		"ICON_NONE":0,
     		"ICON_FOLDER_FILE_OPEN":1,
@@ -374,86 +319,46 @@
 	"define":{
 		"SCROLLBAR_LEFT_SIDE":0,
 		"SCROLLBAR_RIGHT_SIDE":1,
-		"CHECK_BOUNDS_ID(src, dst)":
-			"((src.x == dst.x) && (src.y == dst.y) && (src.width == dst.width) && (src.height == dst.height))",
+		"CHECK_BOUNDS_ID(src, dst)":"((src.x == dst.x) && (src.y == dst.y) && (src.width == dst.width) && (src.height == dst.height))",
 		"RAYGUI_ICON_SIZE":16,
         "RAYGUI_ICON_MAX_ICONS":256,
         "RAYGUI_ICON_MAX_NAME_LENGTH":32,
         "RAYGUI_ICON_DATA_ELEMENTS":"(RAYGUI_ICON_SIZE*RAYGUI_ICON_SIZE/32)",
 	},
-	"function":{
+	"function&enum":{
 		//----------------GUI----------------
-		"GuiEnable":{
-			"return":"void",
-			"para":{"void"},
-		},
-		"GuiDisable":{
-			"return":"void",
-			"para":{"void"},
-		},
-		"GuiLock":{
-			"return":"void",
-			"para":{"void"},
-		},
-		"GuiUnlock":{
-			"return":"void",
-			"para":{"void"},
-		},
-		"GuiIsLocked":{
-			"return":"bool",
-			"para":{"void"},
-		},
-		"GuiSetAlpha":{
-			"return":"void",
-			"para":{"float":"alpha"},
-		},
+		"GuiEnable":{"return":"void","para":{"void"},},
+		"GuiDisable":{"return":"void","para":{"void"},},
+		"GuiLock":{"return":"void","para":{"void"},},
+		"GuiUnlock":{"return":"void","para":{"void"},},
+		"GuiIsLocked":{"return":"bool","para":{"void"},},
+		"GuiSetAlpha":{"return":"void","para":{"float":"alpha"},},
+
+		"GuiState":["STATE_NORMAL","STATE_FOCUSED","STATE_PRESSED","STATE_DISABLED"],
+
 		"GuiSetState":{
 			"return":"void",
 			"para":{"int":"state"}
 		},
-		"GuiGetState":{
-			"return":"int",
-			"para":{"void"}
-		},
+		"GuiGetState":{"return":"int","para":{"void"}},
 		//----------------Font----------------
-		"GuiSetFont":{
-			"return":"void",
-			"para":{"Font":"font"}
-		},
-		"GUIGetFont":{
-			"return":"Font",
-			"para":{"void"}
-		},
+		"GuiSetFont":{"return":"void","para":{"Font":"font"}},
+		"GUIGetFont":{"return":"Font","para":{"void"}},
 		//----------------Style----------------
 		"GuiSetStyle":{
 			"return":"void",
 			"para":{"int":["control","property","value"]}
 		},
-		"GuiGetStyle":{
-			"return":"int",
-			"para":{"int":["control","property"]}
-		},
+		"GuiGetStyle":{"return":"int","para":{"int":["control","property"]}},
 		"GuiLoadStyle":{
 			"return":"void",
 			"para":{"const char*":"filename"}
 		},
-		"GuiLoadStyleDefault":{
-			"return":"void",
-			"para":{"void"}
-		},
+		"GuiLoadStyleDefault":{"return":"void","para":{"void"}},
 		//----------------Tooltip----------------
-		"GuiEnableTooltip":{
-			"return":"void",
-			"para":{"void"}
-		},
-		"GuiDisableTooltip":{
-			"return":"void",
-			"para":{"void"}
-		},
-		"GuiSetTooltip":{
-			"return":"void",
-			"para":{"const char*":"tooltip"}
-		},
+		"GuiEnableTooltip":{"return":"void","para":{"void"}},
+		"GuiDisableTooltip":{"return":"void","para":{"void"}},
+		"GuiSetTooltip":{"return":"void","para":{"const char*":"tooltip"}},
 		//----------------icon----------------
 		"GuiIconText":{
 			"return":"const char*",

@@ -9,8 +9,9 @@ const int RedLine = 400;                //红线所在位置（纵坐标）
 const int RedLineWidth = 4;             //红线高度
 const Color BackgroundColor = LIGHTGRAY;//背景颜色
 
-const int letter_rate = 100;            //字母生成速率
-float letter_v = 2;                 //字母下落速率
+const int letter_rate = 50;             //字母生成速率
+float letter_v = 1;                     //字母下落速率
+const float times=2.0f;                      //字母下落速率倍率
 
 const int font_size = 30;               //字母大小
 const float spacing = 0.0f;             //字母间距
@@ -21,9 +22,10 @@ const char characters[]=
                                         //字符集
 Font font;                              //字体资源文件
 
-const Rectangle slider_rec={font_size,RedLine+RedLineWidth,WinWidth-3*font_size,font_size};
 const Rectangle button_rec={WinWidth-3*font_size,WinHeight-font_size*1.5f,font_size*3,font_size*1.5f};
-
+const Rectangle label_speed_character_rec={0,RedLine+RedLineWidth,3*font_size,font_size};
+const Rectangle slider_rec={3.5f*font_size,RedLine+RedLineWidth,WinWidth-4.5*font_size,font_size};
+const Rectangle label_speed_num_rec={(WinWidth+1.5f*font_size)/2.0f,RedLine+RedLineWidth,font_size,font_size};
 
 bool GameOver = true;                   //游戏是否中止
 bool IsPaused = false;                  //游戏是否暂停
@@ -75,13 +77,18 @@ void GetFont(){
 }
 
 void Process(){
+//速度条
+    GuiLabel(label_speed_character_rec,"速率:");
+    GuiSlider(slider_rec,"0","9",&letter_v,0,9);
+    GuiLabel(label_speed_num_rec,TextFormat("%d",(int)letter_v));
+
+//暂停机制
     if(!IsPaused&&GuiButton(button_rec,"暂停"))
         IsPaused=true;
     else if(IsPaused&&GuiButton(button_rec,"继续"))
         IsPaused=false;
-    GuiSliderBar(slider_rec,"0","10",&letter_v,0,10);
-
     if(IsPaused)return;
+
 //定时生成字母
     static int time=0;
     time++;
@@ -92,7 +99,7 @@ void Process(){
     for(int i=65;i<=90;i++)
         if(IsKeyPressed(i))
             if(!letters[i-65].empty()){
-                point++;
+                point=point+letter_v;
                 if(point>=max_point)max_point=point;
                 letters[i-65].clear();
             }
@@ -100,7 +107,7 @@ void Process(){
 //字母整体位移
     for(int i=0;i<26;i++)
         for(std::vector<aLetter>::iterator it = letters[i].begin();it!=letters[i].end();it++)
-            it->y += letter_v;
+            it->y += letter_v*times;
 
 //判断是否到达红线
     for(int i=0;i<26;i++)
