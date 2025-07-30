@@ -10,6 +10,7 @@ link_directories(${PROJECT_SOURCE_DIR}/lib)
 
 set(SOURCES ${PROJECT_SOURCE_DIR}/src/main.cpp)
 
+
 add_executable(${PROJECT_NAME} WIN32 ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME} raylib winmm)

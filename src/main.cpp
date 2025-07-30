@@ -1,5 +1,7 @@
-#include <raylib/raylib.h>
 #include <vector>
+
+#define RAYGUI_IMPLEMENTATION
+#include <raylib/raygui.h>
 
 const int WinWidth = 480;               //窗口宽度
 const int WinHeight = 600;              //窗口高度
@@ -8,18 +10,23 @@ const int RedLineWidth = 4;             //红线高度
 const Color BackgroundColor = LIGHTGRAY;//背景颜色
 
 const int letter_rate = 100;            //字母生成速率
-const int letter_v = 2;                 //字母下落速率
+float letter_v = 2;                 //字母下落速率
 
 const int font_size = 30;               //字母大小
 const float spacing = 0.0f;             //字母间距
 const char font_name[] =
         "C:/Windows/Fonts/simhei.ttf";  //字体文件路径
 const char characters[]=
-        "abcdefghijklmnopqrstuvwxyzENPRT0123456789.:[]最高分数";
+        "abcdefghijklmnopqrstuvwxyzENPRT0123456789.:[]最高分数速率暂停继续";
                                         //字符集
 Font font;                              //字体资源文件
 
+const Rectangle slider_rec={font_size,RedLine+RedLineWidth,WinWidth-3*font_size,font_size};
+const Rectangle button_rec={WinWidth-3*font_size,WinHeight-font_size*1.5f,font_size*3,font_size*1.5f};
+
+
 bool GameOver = true;                   //游戏是否中止
+bool IsPaused = false;                  //游戏是否暂停
 int point = 0;                          //分数
 int max_point = 0;                      //最高分数
 
@@ -63,9 +70,18 @@ void GetFont(){
     font=LoadFontFromMemory(".ttf",fileData,filesize,font_size,codepoints,cnt);
     UnloadCodepoints(codepoints);
     UnloadFileData(fileData);
+    GuiSetFont(font);
+    GuiSetStyle(DEFAULT,TEXT_SIZE,font_size);
 }
 
 void Process(){
+    if(!IsPaused&&GuiButton(button_rec,"暂停"))
+        IsPaused=true;
+    else if(IsPaused&&GuiButton(button_rec,"继续"))
+        IsPaused=false;
+    GuiSliderBar(slider_rec,"0","10",&letter_v,0,10);
+
+    if(IsPaused)return;
 //定时生成字母
     static int time=0;
     time++;
@@ -101,6 +117,7 @@ void GenerateLetter(){
 }
 
 void Draw(){
+
     BeginDrawing();
 
         ClearBackground(BackgroundColor);
@@ -115,6 +132,8 @@ void Draw(){
         Vector2 tmp=MeasureTextEx(font,TextFormat("分数:%d",point),font_size,spacing);
         DrawTextEx(font,TextFormat("分数:%d",point),Vector2{(WinWidth-tmp.x)/2.0f,0.0f},font_size,spacing,SKYBLUE);
         DrawTextEx(font,TextFormat("最高分数:%d",max_point),Vector2{(WinWidth-MeasureTextEx(font,TextFormat("最高分数:%d",max_point),font_size,spacing).x)/2.0f,tmp.y},font_size,spacing,MAROON);
+
+
 
     EndDrawing();
 }
