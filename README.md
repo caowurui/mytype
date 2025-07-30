@@ -17,8 +17,11 @@
 |-- lib
 |   `-- libraylib.a
 |-- raygui.json
+|-- screenshots
+|   `-- MyType_v0.2.0.png
 `-- src
     `-- main.cpp
+
 ```
 
 # 说明
@@ -28,8 +31,12 @@
 
 # 待办事项
 
-- [ ] 添加滑块以控制字母下落频率
+- [x] ~~添加滑块以控制字母下落频率~~
 
 - [x] ~~添加滑块以控制字母下落速率~~
 
 - [ ] 更美观的 GUI 界面
+
+# 截图
+
+![MyType的v0.2.0版本](screenshots/MyType_v0.2.0.png)

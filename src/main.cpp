@@ -19,7 +19,7 @@ const float spacing = 0.0f;             //字母间距
 const char font_name[] =
         "C:/Windows/Fonts/simhei.ttf";  //字体文件路径
 const char characters[]=
-        "abcdefghijklmnopqrstuvwxyz0123456789.:[]最高分数频速率请按任意键继续暂停生成";
+        "abcdefghijklmnopqrstuvwxyz0123456789.:最高分数频速率请按任意键继续暂停生成";
                                         //字符集
 Font font;                              //字体资源文件
 
@@ -150,8 +150,6 @@ void Draw(){
         Vector2 tmp=MeasureTextEx(font,TextFormat("分数:%d",point),font_size,spacing);
         DrawTextEx(font,TextFormat("分数:%d",point),Vector2{(WinWidth-tmp.x)/2.0f,0.0f},font_size,spacing,SKYBLUE);
         DrawTextEx(font,TextFormat("最高分数:%d",max_point),Vector2{(WinWidth-MeasureTextEx(font,TextFormat("最高分数:%d",max_point),font_size,spacing).x)/2.0f,tmp.y},font_size,spacing,MAROON);
-
-
 
     EndDrawing();
 }

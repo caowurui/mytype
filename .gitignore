@@ -4,3 +4,8 @@ CMakeLists.txt.user
 # Raylib
 include/raylib
 lib/libraylib.a
+
+raygui.json
+
+# git 指令
+git_help.md
