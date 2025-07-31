@@ -1,3 +1,5 @@
+//#define DEBUG
+
 #include <vector>
 
 #define RAYGUI_IMPLEMENTATION
@@ -8,6 +10,8 @@ const int WinHeight = 600;              //窗口高度
 const int RedLine = 400;                //红线所在位置（纵坐标）
 const int RedLineWidth = 4;             //红线高度
 const Color BackgroundColor = LIGHTGRAY;//背景颜色
+
+const float slider_height = 0.25f;       //滑块高度
 
 const int letter_rate = 120;            //字母生成标准周期
 float r_times=1.0f;                     //字母生成频率倍率
@@ -25,13 +29,15 @@ Font font;                              //字体资源文件
 
 const Rectangle button_rec={WinWidth-3*font_size,WinHeight-font_size*1.5f,font_size*3,font_size*1.5f};
 
-const Rectangle label_speed_character_rec={0,RedLine+RedLineWidth,3*font_size,font_size};
-const Rectangle slider_speed_rec={3.5f*font_size,RedLine+RedLineWidth,WinWidth-4.5*font_size,font_size};
-const Rectangle label_speed_num_rec={(WinWidth+1.0f*font_size)/2.0f,RedLine+RedLineWidth,2*font_size,font_size};
+const Rectangle label_speed_char_left_rec={0,RedLine+RedLineWidth+0.5f*font_size,3.5*font_size,font_size};
+const Rectangle label_speed_char_right_rec={WinWidth-2.7*font_size,RedLine+RedLineWidth+0.5f*font_size,0.7*font_size,font_size};
+const Rectangle slider_speed_rec={3.5f*font_size,RedLine+RedLineWidth+font_size*(1-slider_height/2),WinWidth-6.5*font_size,font_size*slider_height};
+const Rectangle label_speed_num_rec={WinWidth-2*font_size,RedLine+RedLineWidth+0.5f*font_size,2*font_size,font_size};
 
-const Rectangle label_gen_character_rec={0,RedLine+RedLineWidth+font_size,6*font_size,font_size};
-const Rectangle slider_gen_rec={5.5f*font_size,RedLine+RedLineWidth+font_size,WinWidth-7.0*font_size,font_size};
-const Rectangle label_gen_num_rec={(WinWidth+1.5f*font_size)/2.0f,RedLine+RedLineWidth+font_size,2*font_size,font_size};
+const Rectangle label_gen_char_left_rec={0,RedLine+RedLineWidth+2.0f*font_size,5.5*font_size,font_size};
+const Rectangle label_gen_char_right_rec={WinWidth-3.2*font_size,RedLine+RedLineWidth+2.0f*font_size,1.2*font_size,font_size};
+const Rectangle slider_gen_rec={5.5f*font_size,RedLine+RedLineWidth+font_size*(2.5f-slider_height/2),WinWidth-9.0*font_size,font_size*slider_height};
+const Rectangle label_gen_num_rec={WinWidth-2*font_size,RedLine+RedLineWidth+2.0f*font_size,2*font_size,font_size};
 
 bool GameOver = true;                   //游戏是否中止
 bool IsPaused = false;                  //游戏是否暂停
@@ -44,7 +50,7 @@ struct aLetter{
 };
 std::vector<aLetter> letters[26];       //存储各种字母
 
-void GetFont();                         //获得并初始化字体
+void Init();                            //初始化字体与游戏控件
 void Process();                         //主体游戏逻辑
 void GenerateLetter();                  //随机生成新的字母
 void Draw();                            //绘制字母
@@ -55,22 +61,26 @@ int main(){
     SetTargetFPS(60);                           //设置FPS
     InitWindow(WinWidth,WinHeight,"My Type");   //初始化窗口
 
-    GetFont();                                  //获取字体
+    Init();                                  //获取字体
 
     while(!WindowShouldClose()){                //游戏循环
+#ifndef DEBUG
         if(!GameOver){
+#endif
             Process();                          //游戏主逻辑
             Draw();                             //绘图
+#ifndef DEBUG
         }
         else
             ToBeContinued();                    //游戏中止
+#endif
     }
 
     CloseWindow();
     return 0;
 }
 
-void GetFont(){
+void Init(){
     int filesize;
     unsigned char* fileData=LoadFileData(font_name,&filesize);
     int cnt;
@@ -80,18 +90,31 @@ void GetFont(){
     UnloadFileData(fileData);
     GuiSetFont(font);
     GuiSetStyle(DEFAULT,TEXT_SIZE,font_size);
+    GuiSetStyle(BUTTON,BORDER_COLOR_NORMAL,ColorToInt(BLANK));
+
+    GuiSetStyle(SLIDER,BORDER_COLOR_NORMAL,ColorToInt(GRAY));
+    GuiSetStyle(SLIDER,BORDER_COLOR_FOCUSED,ColorToInt(GRAY));
+    GuiSetStyle(SLIDER,BORDER_COLOR_PRESSED,ColorToInt(GRAY));
+    GuiSetStyle(SLIDER,SLIDER_PADDING,-font_size/6.0);
+    GuiSetStyle(SLIDER,SLIDER_WIDTH,font_size);
+
+    GuiSetStyle(LABEL,TEXT_ALIGNMENT,TEXT_ALIGN_CENTER);
 }
 
 void Process(){
 //速度条
-    GuiLabel(label_speed_character_rec,"速率:");
-    GuiSlider(slider_speed_rec,"0","9",&letter_v,0,9);
+    GuiLabel(label_speed_char_left_rec,"速率:0");
+    GuiSlider(slider_speed_rec,"","",&letter_v,0,9.9);
+    GuiLabel(label_speed_char_right_rec,"9");
     GuiLabel(label_speed_num_rec,TextFormat("%.1f",letter_v));
+    DrawRectangleLinesEx(label_speed_num_rec,RedLineWidth/2,BLUE);
 
 //生成速率条
-    GuiLabel(label_gen_character_rec,"生成频率:");
-    GuiSlider(slider_gen_rec,"1","20",&r_times,1.0f,20.0f);
+    GuiLabel(label_gen_char_left_rec,"生成频率:1");
+    GuiSlider(slider_gen_rec,"","",&r_times,1.0f,20.0f);
+    GuiLabel(label_gen_char_right_rec,"20");
     GuiLabel(label_gen_num_rec,TextFormat("%d",(int)r_times));
+    DrawRectangleLinesEx(label_gen_num_rec,RedLineWidth/2,BLUE);
 
 //暂停机制
     if(!IsPaused&&GuiButton(button_rec,"暂停"))
